@@ -1,5 +1,5 @@
 ```console
-python main.py -h
+foo@bar:~$ python main.py -h
 usage: logTime [-h] [--list] [--steps {STEPS_GLOBAL,STEPS_V1,STEPS_OPTIM}] filepath
 
 Parse logs and print out operation measures
