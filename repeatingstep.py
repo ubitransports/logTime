@@ -12,12 +12,12 @@ class RepeatingStep(Step):
 
     def end_repeating(self):
         self.total_times.append(sum(self.occurrences[self.last_end_index:]))
-        self.last_end_index = len(self.occurrences) - 1
+        self.last_end_index = len(self.occurrences)
 
     def print(self, level=0):
         super().print(level)
         _data = np.array(self.total_times)
-        print(Fore.GREEN + "{}Total MEDIAN: {:.0f}ms".format(level*"\t", np.median(_data)) + Style.RESET_ALL)
+        print(Fore.GREEN + "{}Total MEAN: {:.0f}ms".format(level*"\t", np.mean(_data)) + Style.RESET_ALL)
 
     def print_decorate(self):
         pass

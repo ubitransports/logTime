@@ -12,9 +12,12 @@ class Step:
         if sub_types is None:
             sub_types = list()
         self.name = name
+        self.isSubtype = False
         self.startPattern = re.compile(start)
         self.endPattern = re.compile(end)
         self.sub_steps = sub_types
+        for sub_type in self.sub_steps:
+            sub_type.isSubtype = True
         self.start = 0
         self.end = 0
         self.duration = 0
@@ -55,12 +58,14 @@ class Step:
         tabs = level*"\t"
         self.print_decorate()
         print(f"{tabs}The total number of operation for {Fore.BLUE}'{self.name}'{Style.RESET_ALL}: {_data.size:d}")
-        print("{}MIN: {:.0f}ms".format(tabs, _data.min()))
-        print("{}MAX: {:.0f}ms".format(tabs, _data.max()))
-        print("{}ST DEVIATION: {:.0f}ms".format(tabs, np.std(_data)))
-        print(Fore.GREEN + "{}MEDIAN: {:.0f}ms".format(tabs, np.median(_data)) + Style.RESET_ALL)
-        for sub_step in self.sub_steps:
-            sub_step.print(level + 1)
+        if _data.size > 0:
+            print("{}MIN: {:.0f}ms".format(tabs, _data.min()))
+            print("{}MAX: {:.0f}ms".format(tabs, _data.max()))
+            print("{}MEDIAN: {:.0f}ms".format(tabs, np.median(_data)))
+            print("{}ST DEVIATION: {:.0f}ms".format(tabs, np.std(_data)))
+            print(Fore.GREEN + "{}MEAN: {:.0f}ms".format(tabs, np.mean(_data)) + Style.RESET_ALL)
+            for sub_step in self.sub_steps:
+                sub_step.print(level + 1)
         self.print_decorate()
 
     def print_decorate(self):
@@ -68,3 +73,14 @@ class Step:
 
     def __str__(self):
         return "Step start: {} end: {} duration: {:d} ms".format(self.start, self.end, trunc(self.duration))
+
+    def export(self, writer):
+        _data = np.array(self.occurrences)
+        if _data.size > 0:
+            if not self.isSubtype:
+                writer.writerow([self.name, "", _data.min(), _data.max(), np.median(_data), np.mean(_data), np.std(_data)])
+            else:
+                writer.writerow(
+                    ["", self.name, _data.min(), _data.max(), np.median(_data), np.mean(_data), np.std(_data)])
+            for sub_step in self.sub_steps:
+                sub_step.export(writer)
