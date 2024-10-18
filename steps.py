@@ -3,7 +3,7 @@ import copy
 from repeatingstep import RepeatingStep
 from step import Step
 
-contactless = RepeatingStep("Contactless Reader transmit", r"(FlowbirdA1000Contactless|FamocoAsk|Bluebird|M2TContactless|TelpoTech)Reader.*transmitApdu.*apduIn", r"Reader.*transmitApdu.*result=")
+contactless = RepeatingStep("Contactless Reader transmit", r"(FlowbirdA1000Contactless|FamocoAsk|Bluebird|M2TContactless|TelpoTech|TelpoNfc)Reader.*transmitApdu.*apduIn", r"Reader.*transmitApdu.*result=")
 sam = RepeatingStep("SAM Reader transmit", r"SamReader.*transmitApdu.*apduIn", r"SamReader.*transmitApdu.*result=")
 
 STEPS_GLOBAL = [
