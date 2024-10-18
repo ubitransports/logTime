@@ -36,6 +36,7 @@ if __name__ == '__main__':
     parser.add_argument('--list', dest='list', help='List available step lists', action='store_true')
     parser.add_argument("--steps", dest="steps", choices=STEPS_LIST.keys(), default=list(STEPS_LIST.keys())[0])
     parser.add_argument("--export", dest="export", help="Export to CSV file", action='store_true')
+    parser.add_argument("--occurrences", dest="number_of_occurrences", type=int, default=20, help="Number of occurrences to take into account")
     args = parser.parse_args()
 
     if args.list:
@@ -70,13 +71,13 @@ if __name__ == '__main__':
         print("===========================================================================================")
         print(f"\t\t\tReport for {Fore.RED}{Style.BRIGHT}{Path(args.filepath).stem.upper()}{Style.RESET_ALL}")
         for step in STEPS:
-            step.print()
+            step.print(args.number_of_occurrences)
     else:
         with open(f"{Path(args.filepath).stem.upper()}.csv", 'w') as file:
             writer = csv.writer(file)
             fields = ["Step", "Sub step", "Min", "Max", "Median", "Mean", "Standard deviation"]
             writer.writerow(fields)
             for step in STEPS:
-                step.export(writer)
+                step.export(writer, args.number_of_occurrences)
         print(f"Result exported to CSV file {Fore.RED}{Style.BRIGHT}{file.name}{Style.RESET_ALL}")
 

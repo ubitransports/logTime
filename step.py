@@ -53,9 +53,12 @@ class Step:
                     for sub_step in self.sub_steps:
                         sub_step.search(_line, _time)
 
-    def print(self, level=0):
-        _data = np.array(self.occurrences)
-        tabs = level*"\t"
+    def print(self, nb_of_occurrences=20):
+        _data = np.array(self.occurrences[-nb_of_occurrences:])
+        if self.isSubtype:
+            tabs = "\t"
+        else:
+            tabs = ""
         self.print_decorate()
         print(f"{tabs}The total number of operation for {Fore.BLUE}'{self.name}'{Style.RESET_ALL}: {_data.size:d}")
         if _data.size > 0:
@@ -65,7 +68,7 @@ class Step:
             print("{}ST DEVIATION: {:.0f}ms".format(tabs, np.std(_data)))
             print(Fore.GREEN + "{}MEAN: {:.0f}ms".format(tabs, np.mean(_data)) + Style.RESET_ALL)
             for sub_step in self.sub_steps:
-                sub_step.print(level + 1)
+                sub_step.print()
         self.print_decorate()
 
     def print_decorate(self):
@@ -74,8 +77,8 @@ class Step:
     def __str__(self):
         return "Step start: {} end: {} duration: {:d} ms".format(self.start, self.end, trunc(self.duration))
 
-    def export(self, writer):
-        _data = np.array(self.occurrences)
+    def export(self, writer, nb_of_occurrences=20):
+        _data = np.array(self.occurrences[-nb_of_occurrences:])
         if _data.size > 0:
             if not self.isSubtype:
                 writer.writerow([self.name, "", _data.min(), _data.max(), np.median(_data), np.mean(_data), np.std(_data)])
